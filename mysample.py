@@ -11,18 +11,16 @@ clr.AddReference(r"C:\\Program Files\\Audio Precision\\APx500 9.0\\API\\AudioPre
 from AudioPrecision.API import *
 from System.IO import Directory, Path
 
-#### Open APx500 
-# APx = APx500_Application()
-APx = APx500_Application(APxOperatingMode.SequenceMode, "-Demo -APx500Flex")
+# #### Open APx500 Application
+# APx = APx500_Application(APxOperatingMode.SequenceMode, "-Demo -APx500Flex")
+# or
+filename = "SampleProject.approjx"
+directory = Directory.GetCurrentDirectory()
+fullpath = Path.Combine(directory, filename)
+APx = APx500_Application()
+APx.OpenProject(fullpath)
+
 APx.Visible = True
-
-
-# filename = "SampleProject.approjx"
-# directory = Directory.GetCurrentDirectory()
-# fullpath = Path.Combine(directory, filename)APx = APx500_Application()
-# APx.OpenProject(fullpath)
-# APx500 APx = new APx500(APxOperatingMode.SequenceMode, "-Demo -APx500Flex");
-
 
 #EXTRA
 # Does it have enough channels?
