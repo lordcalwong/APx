@@ -1,22 +1,27 @@
 import pythonnet
 import sys, clr 
-import os
+# import os
 
-# APx API needed for ???
-clr.AddReference(r"C:\\Program Files\\Audio Precision\\APx500 9.0\\API\\AudioPrecision.API2.dll")    
-clr.AddReference(r"C:\\Program Files\\Audio Precision\\APx500 9.0\\API\\AudioPrecision.API.dll") 
+# API Wrapper for Python
+# clr.AddReference(r"C:\\Program Files\\Audio Precision\\APx500 9.0\\API\\AudioPrecision.API.dll") 
+clr.AddReference(r"C:\\Program Files\\Audio Precision\\APx500 9.0\\API\\AudioPrecision.API2.dll") 
+# COM Wrapper
+# clr.AddReference(r"C:\\Program Files\\Audio Precision\\APx500 9.0\\API\\AudioPrecision.API3.dll")
 
 from AudioPrecision.API import *
 from System.IO import Directory, Path
 
-filename = "SampleProject.approjx"
-directory = Directory.GetCurrentDirectory()
-fullpath = Path.Combine(directory, filename)
-# APx500 APx = new APx500(APxOperatingMode.SequenceMode, "-Demo -APx500Flex");
-APx = APx500_Application()
-# APx.OpenProject(fullpath)
+#### Open APx500 
+# APx = APx500_Application()
+APx = APx500_Application(APxOperatingMode.SequenceMode, "-Demo -APx500Flex")
 APx.Visible = True
 
+
+# filename = "SampleProject.approjx"
+# directory = Directory.GetCurrentDirectory()
+# fullpath = Path.Combine(directory, filename)APx = APx500_Application()
+# APx.OpenProject(fullpath)
+# APx500 APx = new APx500(APxOperatingMode.SequenceMode, "-Demo -APx500Flex");
 
 
 #EXTRA
