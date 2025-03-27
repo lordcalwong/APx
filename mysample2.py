@@ -1,6 +1,19 @@
 import pythonnet
 import sys, clr 
+import csv
 # import os
+
+#  Writes data to a CSV file
+def write_to_csv(filename, data):
+    """
+    Args:
+        filename (str): The name of the CSV file to write to.
+        data (list of lists): A list of rows, where each row is a list of values.
+    """
+    with open(filename, 'w', newline='') as csvfile:
+        csv_writer = csv.writer(csvfile)
+        csv_writer.writerows(data)
+
 
 # API Wrapper for Python
 # clr.AddReference(r"C:\\Program Files\\Audio Precision\\APx500 9.0\\API\\AudioPrecision.API.dll") 
@@ -11,17 +24,16 @@ clr.AddReference(r"C:\\Program Files\\Audio Precision\\APx500 9.0\\API\\AudioPre
 from AudioPrecision.API import *
 from System.IO import Directory, Path
 
-# #### Open APx500 Application
+# # Open APx500 Application
 # APx = APx500_Application(APxOperatingMode.SequenceMode, "-Demo -APx500Flex")
-
-# #### or open and existing project
+# or open and existing project
 filename = "MySampleProject.approjx"
 directory = Directory.GetCurrentDirectory()
 fullpath = Path.Combine(directory, filename)
 APx = APx500_Application()
 APx.OpenProject(fullpath)
 
-
+# MAIN
 APx.Visible = True
 
 # How many channels?
@@ -48,7 +60,6 @@ APx.AcousticResponse.GeneratorWithPilot.Durations.Sweep.Value = 1;
         
 #Check a couple results to be included in the active sequence
 APx.AcousticResponse.Level.Checked = True
-APx.AcousticResponse.Phase.Checked = True
 APx.AcousticResponse.ThdRatio.Checked = True
 
 #Add a derived result and configure it
@@ -67,18 +78,33 @@ exportStep.Append = False
 # Run the sequence, which will run the Acoustic Response measurement
 APx = APx500_Application()
 APx.Sequence.Run()
-      
-# Get results acquired from last run
-# Get Frequency Response RMS Level XY values by result name (string)
-level_xvalues = APx.Sequence[0]["Acoustic Response"].SequenceResults["Smoothed Response"].GetXValues(InputChannelIndex.Ch1, VerticalAxis.Left, SourceDataType.Measured, 1)
-level_yvalues = APx.Sequence[0]["Acoustic Response"].SequenceResults["Smoothed Response"].GetYValues(InputChannelIndex.Ch1, VerticalAxis.Left, SourceDataType.Measured, 1)
 
+### Get results acquired from last run
 # Get Frequency Response Gain XY values by result type
 thd_xvalues = APx.Sequence[0]["Acoustic Response"].SequenceResults[MeasurementResultType.ThdRatioVsFrequency].GetXValues(InputChannelIndex.Ch1, VerticalAxis.Left, SourceDataType.Measured, 1)
 thd_yvalues = APx.Sequence[0]["Acoustic Response"].SequenceResults[MeasurementResultType.ThdRatioVsFrequency].GetYValues(InputChannelIndex.Ch1, VerticalAxis.Left, SourceDataType.Measured, 1)
 
-# Print all level y values to show that APIs ran succesfully
-print (*level_yvalues)
+# Get Frequency Response RMS Level XY values by result name (string)
+level_xvalues = APx.Sequence[0]["Acoustic Response"].SequenceResults["Smoothed Response"].GetXValues(InputChannelIndex.Ch1, VerticalAxis.Left, SourceDataType.Measured, 1)
+level_yvalues = APx.Sequence[0]["Acoustic Response"].SequenceResults["Smoothed Response"].GetYValues(InputChannelIndex.Ch1, VerticalAxis.Left, SourceDataType.Measured, 1)
+
+
+# # Print all level y values to show that APIs ran succesfully
+# print (*level_yvalues)
+# or print to csv
+OutJob = "output.csv"
+write_to_csv(OutJob, level_xvalues)
+print(f"Data written to {OutJob}")
+
+
+
+
+
+
+# # Append measured data to data file
+# with open(os.path.join(save_path , filename), "a") as datafile:
+#     datafile.write(f"{counter:4.0f}, {dt.hour:02d}.{dt.minute:02d}.{dt.second:02d}, {Vmax:.3f}, {Vrms:.3f}\n")
+#     datafile.close()
 
 
 # APx.Sequence["Signal Path1"][“MR"].SequenceResults[“RMS Level”].Checked = true;
