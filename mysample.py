@@ -154,8 +154,11 @@ print (*level_yvalues)
 # APx.BenchMode.Measurements.Recorder.Start();
 # while (APx.BenchMode.Measurements.Recorder.IsStarted)
 #   Thread.Sleep(100);
+# APx.BenchMode.get
 # APx.BenchMode.Measurements.Recorder.ExportData();
 
 # bool errorOccurred = APx.BenchMode.Measurements.Recorder.HasError;
 # string errorMsg = APx.BenchMode.Measurements.Recorder.LastErrorMessage;
 # APError errorCode = APx.BenchMode.Measurements.Recorder.LastErrorCode;
+
+
