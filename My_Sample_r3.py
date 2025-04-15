@@ -3,6 +3,7 @@ import sys, clr
 import csv
 import numpy as np
 import os
+from glob import glob
 
 def print_arrays_to_csv(x, y, filename="data.csv", headers=None):
     """
@@ -23,16 +24,24 @@ def print_arrays_to_csv(x, y, filename="data.csv", headers=None):
         writer.writerow(headers)  # Write the header row
         writer.writerows(data)  # Write the data rows
 
-def get_home_without_onedrive():
+def get_home_incl_onedrive():
     """
-    Get user's home directory without OneDrive.
+    Get user's home directory including OneDrive.
     """
-    home_path = os.path.join(os.path.expanduser("~"), "Desktop")  
-    if "OneDrive" in home_path:
-        # Remove OneDrive from the path
-        parts = home_path.split(os.path.sep)
-        home_path = os.path.sep.join(parts[:parts.index(parts[-1])])
-    return home_path
+    home_path = glob(os.path.expanduser("~\\*\\Desktop"))
+    print(*home_path)      # On some machines, there is more than 1 Desktop
+    if (len(home_path) > 1):
+        home_path_str = home_path[0]
+    else:
+        home_path_str = home_path[0]
+    # if len(home_path) == 0:
+    #     home_path = os.path.join(os.path.expanduser("~"), "Desktop")  
+    #On the other hand, if OneDrive and you'd like to avoid by stripping it out
+    #     # if "OneDrive" in home_path:
+    #     # Remove OneDrive from the path
+    #     parts = home_path.split(os.path.sep)
+    #     home_path = os.path.sep.join(parts[:parts.index(parts[-1])])
+    return home_path_str
 
 # APx API Wrapper for Python
 clr.AddReference(r"C:\\Program Files\\Audio Precision\\APx500 9.0\\API\\AudioPrecision.API.dll") 
@@ -91,8 +100,8 @@ smooth.Checked = True
 exportStep = APx.AcousticResponse.SequenceMeasurement.SequenceSteps.ExportResultDataSteps.Add()
 exportStep.ResultName = smooth.Name
 exportStep.ExportSpecification = "All Points"
-home_dir = get_home_without_onedrive()
-print("Setting sequence step to export data to", home_dir)
+home_dir = get_home_incl_onedrive()
+print("Set sequence step to export data to ", home_dir)
 exportStep.FileName = os.path.join(home_dir , "SmoothedResponse.xlsx")
 exportStep.Append = False
 
