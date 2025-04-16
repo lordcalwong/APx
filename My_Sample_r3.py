@@ -33,7 +33,7 @@ def get_home_incl_onedrive():
     if (len(home_path) > 1):
         home_path_str = home_path[0]
     else:
-        home_path_str = home_path[0]
+        home_path_str = os.path.join(os.path.expanduser("~"), "Desktop")
     # if len(home_path) == 0:
     #     home_path = os.path.join(os.path.expanduser("~"), "Desktop")  
     #On the other hand, if OneDrive and you'd like to avoid by stripping it out
