@@ -3,7 +3,6 @@ import sys, clr
 import csv
 import numpy as np
 import os
-from glob import glob
 
 def print_arrays_to_csv(x, y, filename="data.csv", headers=None):
     """
@@ -24,24 +23,6 @@ def print_arrays_to_csv(x, y, filename="data.csv", headers=None):
         writer.writerow(headers)  # Write the header row
         writer.writerows(data)  # Write the data rows
 
-def get_home_incl_onedrive():
-    """
-    Get user's home directory including OneDrive.
-    """
-    home_path = glob(os.path.expanduser("~\\*\\Desktop"))
-    print(*home_path)      # On some machines, there is more than 1 Desktop
-    if (len(home_path) > 1):
-        home_path_str = home_path[0]
-    else:
-        home_path_str = os.path.join(os.path.expanduser("~"), "Desktop")
-    # if len(home_path) == 0:
-    #     home_path = os.path.join(os.path.expanduser("~"), "Desktop")  
-    #On the other hand, if OneDrive and you'd like to avoid by stripping it out
-    #     # if "OneDrive" in home_path:
-    #     # Remove OneDrive from the path
-    #     parts = home_path.split(os.path.sep)
-    #     home_path = os.path.sep.join(parts[:parts.index(parts[-1])])
-    return home_path_str
 
 # APx API Wrapper for Python
 clr.AddReference(r"C:\\Program Files\\Audio Precision\\APx500 9.0\\API\\AudioPrecision.API.dll") 
@@ -81,11 +62,13 @@ APx.Noise.Level.Checked = True
 # Add a new test 'Acoustic Response' makes it active (no need for ShowMeasurement)
 APx.AddMeasurement("Signal Path1", MeasurementType.AcousticResponse)
 
-# Setup Signal Path or easier to use existing project settings
-# APx.AcousticResponse.GeneratorWithPilot.Frequencies.Start.Value =20;
-# APx.AcousticResponse.GeneratorWithPilot.Frequencies.Stop.Value = 20000;
-# APx.AcousticResponse.GeneratorWithPilot.Levels.Sweep.SetValue(OutputChannelIndex.Ch1, "0.000 dBrG");
-# APx.AcousticResponse.GeneratorWithPilot.Durations.Sweep.Value = 1;
+# Setup Signal Path for Acoustic Response; Delete this section if easier to use existing project settings
+# APx.Measurement.SweepType.SetValue(LogChirp);
+APx.AcousticResponse.GeneratorWithPilot.Frequencies.Start.Value =20;
+APx.AcousticResponse.GeneratorWithPilot.Frequencies.Stop.Value = 20000;
+APx.AcousticResponse.GeneratorWithPilot.Levelstracking = True;
+APx.AcousticResponse.GeneratorWithPilot.Levels.Sweep.SetValue(OutputChannelIndex.Ch1, "0.000 dBrG");
+APx.AcousticResponse.GeneratorWithPilot.Durations.Sweep.Value = 0.250;
 
 #Check a couple results to be included in the active sequence
 APx.AcousticResponse.Level.Checked = True
@@ -100,9 +83,9 @@ smooth.Checked = True
 exportStep = APx.AcousticResponse.SequenceMeasurement.SequenceSteps.ExportResultDataSteps.Add()
 exportStep.ResultName = smooth.Name
 exportStep.ExportSpecification = "All Points"
-home_dir = get_home_incl_onedrive()
-print("Set sequence step to export data to ", home_dir)
-exportStep.FileName = os.path.join(home_dir , "SmoothedResponse.xlsx")
+current_dir =  os.getcwd()
+print("Set sequence step to export data to ", current_dir)
+exportStep.FileName = os.path.join(current_dir , "SmoothedResponse.xlsx")
 exportStep.Append = False
 
 # Run the sequence, which will run the Acoustic Response measurement
