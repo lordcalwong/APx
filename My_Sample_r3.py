@@ -55,6 +55,10 @@ print (f"Max Input Channels: {maxInputChCount}")
 APx.SignalPathSetup.AnalogInputChannelCount = maxInputChCount
 APx.SignalPathSetup.AnalogOutputChannelCount = maxOutputChCount
 
+# setup Reference load for proper wattage calculation
+APx.SignalPathSetup.References.AnalogOutputReferences.Watts.Unit = "OHMS"
+APx.SignalPathSetup.References.AnalogOutputReferences.Watts.Value = 4
+
 # How to select existing test to be performed by making it active first
 APx.ShowMeasurement(0,"Noise (RMS)")
 APx.Noise.Level.Checked = True
